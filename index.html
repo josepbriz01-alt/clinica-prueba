@@ -238,6 +238,11 @@ dialog.big{width:min(1100px,calc(100% - 32px));padding:20px;position:fixed}
   #print-area th{background:#eee} #print-area td:last-child{width:22%} #print-area .pbox{width:60px;text-align:center}
   #print-area tr{break-inside:avoid}
 }
+.navtog{background:var(--nav-active);color:var(--nav-fg);border:1px solid color-mix(in srgb,var(--z,var(--accent)) 40%,transparent);border-radius:10px;width:40px;height:40px;font-size:1.25rem;line-height:1;display:grid;place-items:center;flex:none}
+.navtog:hover{background:color-mix(in srgb,var(--z,var(--accent)) 25%,var(--nav))}
+.toplogo{height:34px;width:auto;flex:none}
+body.navhid .app{grid-template-columns:1fr}
+body.navhid nav.side{display:none}
 .cal-ecol{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:.78rem;font-weight:700;margin:0 0 6px}
 .cal-ecol .cle{display:inline-flex;align-items:center;gap:5px;color:var(--ce)}
 .cal-ecol .cle i{width:10px;height:10px;border-radius:3px;background:var(--ce)}
@@ -1195,6 +1200,8 @@ th.mc.sub small{display:block;font-weight:400}
   <div class="content">
     <div class="banner testbar" id="offline" hidden><div class="wrap">Sin conexión con la base de datos. Comprueba internet y recarga la página.</div></div>
     <div class="wrap top">
+      <button type="button" class="navtog" id="nav-toggle" aria-controls="nav" aria-expanded="true" title="Ocultar el menú">☰</button>
+      <img class="toplogo" id="top-logo" alt="Bionos" hidden>
       <h1 id="title">Inicio</h1>
       <span class="date" id="today"></span><span class="clock" id="clock" aria-label="Hora actual"></span>
       <button type="button" class="qs-btn" id="qs-open" title="Buscar una persona (tecla /)" hidden>🔍 Buscar persona <kbd>/</kbd></button>
@@ -2743,6 +2750,16 @@ document.addEventListener("keydown", e => {
   if (e.key !== "Escape" || document.querySelector("dialog[open]")) return;
   if (fichaId){ fichaId = null; renderFicha(); } else if (selected){ selected = null; renderPanel(); renderView(); }
 });
+
+/* ===== ocultar o mostrar el menú de la izquierda: solo con el botón ☰; cada ordenador recuerda cómo lo dejaste ===== */
+function setNavHidden(h){
+  document.body.classList.toggle("navhid", h);
+  const b = $("#nav-toggle"); b.setAttribute("aria-expanded", String(!h)); b.title = h ? "Mostrar el menú" : "Ocultar el menú";
+  const lg = $("#top-logo"), src = (document.querySelector(".brand img") || {}).src; if (src && !lg.src) lg.src = src; lg.hidden = !h;   /* el logo se queda siempre a la vista */
+  try { localStorage.setItem("navHid", h ? "1" : "0"); } catch {}
+}
+$("#nav-toggle").addEventListener("click", () => setNavHidden(!document.body.classList.contains("navhid")));
+try { if (localStorage.getItem("navHid") === "1") setNavHidden(true); } catch {}
 
 /* ===== hoja del día para imprimir: usa los datos que ya hay, sin coste ===== */
 async function printDay(d){
@@ -8849,7 +8866,7 @@ $("#login-forgot").addEventListener("click", async () => {
 });
 $("#logout").addEventListener("click", () => firebase.auth().signOut());
 /* ===== versión nueva: se mira version.txt cada 5 min; se recarga al pulsar o sola de madrugada si no hay nada a medio hacer ===== */
-const APP_VERSION = "20261123003032";
+const APP_VERSION = "20261123003310";
 let newVer = null, newVerLater = 0;
 function unsaved(){
   if (document.querySelector("dialog[open]")) return "Hay una ventana abierta: termínala o ciérrala antes de recargar.";
