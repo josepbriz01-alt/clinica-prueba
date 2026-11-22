@@ -1,3 +1,7 @@
+<!DOCTYPE html>
+<html lang="es">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Clínica</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -207,6 +211,43 @@ dialog.big{width:min(1100px,calc(100% - 32px));padding:20px;position:fixed}
 @media (max-width:560px){.cal .d{min-height:64px;padding:3px}.cal .ev{display:none}.cal .ci{font-size:.65rem;padding:0 3px}}
 .cal-legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.78rem;color:var(--muted);margin:2px 0 4px}
 .cal-legend span{display:inline-flex;align-items:center;gap:5px}
+.qs-btn{margin-left:auto;display:inline-flex;align-items:center;gap:8px;background:var(--nav-active);color:var(--nav-fg);border:1px solid color-mix(in srgb,var(--z,var(--accent)) 40%,transparent);border-radius:10px;padding:7px 12px;font-weight:700}
+.qs-btn:hover{background:color-mix(in srgb,var(--z,var(--accent)) 25%,var(--nav))}
+.qs-btn kbd{font:inherit;font-size:.72rem;border:1px solid var(--nav-muted);border-radius:5px;padding:0 5px;color:var(--nav-muted)}
+.qs-btn:not([hidden]) + .acts{margin-left:0}
+.qs-dlg{width:min(680px,94vw);border:0;border-radius:16px;padding:14px;box-shadow:0 20px 60px rgb(0 0 0/.3);margin-top:10vh}
+.qs-dlg::backdrop{background:rgb(0 0 0/.35)}
+.qs-in{display:flex;gap:10px;align-items:center;font-size:1.2rem}
+.qs-in input{flex:1;font-size:1.1rem;padding:10px 12px;border:2px solid var(--line);border-radius:10px}
+.qs-in input:focus{border-color:var(--accent);outline:0}
+.qs-res{display:flex;flex-direction:column;gap:8px;margin-top:12px;max-height:60vh;overflow-y:auto}
+.qsr{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;background:var(--surface)}
+.qsn{all:unset;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.qsn:hover b{text-decoration:underline}
+.qsn small{color:var(--muted)}
+.qsa{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.qsb{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:4px 10px;font-size:.85rem;font-weight:600}
+.qsb:hover{border-color:var(--accent)}
+.qsb.now{background:color-mix(in srgb,var(--ok) 15%,var(--surface));border-color:var(--ok);color:var(--ok)}
+#print-area{display:none}
+@media print{
+  body.printing > *:not(#print-area){display:none!important}
+  body.printing #print-area{display:block;color:#000;font:12px/1.35 system-ui,sans-serif}
+  #print-area h1{font-size:18px;margin:0 0 4px} #print-area p{margin:0 0 10px;color:#444}
+  #print-area table{width:100%;border-collapse:collapse} #print-area th,#print-area td{border:1px solid #999;padding:5px 6px;text-align:left;vertical-align:top}
+  #print-area th{background:#eee} #print-area td:last-child{width:22%} #print-area .pbox{width:60px;text-align:center}
+  #print-area tr{break-inside:avoid}
+}
+.cal-ecol{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:.78rem;font-weight:700;margin:0 0 6px}
+.cal-ecol .cle{display:inline-flex;align-items:center;gap:5px;color:var(--ce)}
+.cal-ecol .cle i{width:10px;height:10px;border-radius:3px;background:var(--ce)}
+.cal .dtop{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.cal .dtot{font-size:.7rem;font-weight:700;color:var(--fg);background:var(--sunk,rgba(127,127,127,.12));border-radius:999px;padding:0 6px;white-space:nowrap}
+.cal .dtot small{font-weight:600;color:var(--muted)}
+.cv.ce{white-space:normal;line-height:1.2;overflow-wrap:anywhere;background:color-mix(in srgb,var(--ce) 16%,var(--surface));color:color-mix(in srgb,var(--ce) 80%,#000);border-left:3px solid var(--ce);border-radius:0 5px 5px 0}
+.cv.ce.prev{background:var(--surface);color:var(--muted);border-left-style:dashed;opacity:.85}
+.cvwarn{color:var(--danger);font-style:normal;font-size:.65rem;margin-left:2px}
+.cv.ce .cvn{display:inline-block;min-width:16px;font-variant-numeric:tabular-nums}
 .lg-cita{display:inline-block;width:18px;height:10px;border-radius:3px;background:var(--accent-soft)}
 .lg-sat{display:inline-block;width:18px;height:4px;border-radius:9px;background:linear-gradient(90deg,var(--ok),var(--warn),var(--danger))}
 .daycap{display:grid;grid-template-columns:auto 70px 70px 1fr;gap:6px 8px;align-items:center;font-size:.88rem}
@@ -351,6 +392,10 @@ tr.mveto td{background:color-mix(in srgb,var(--danger) 9%,var(--surface))}
 .stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px}
 .stat b{display:block;font-family:var(--f-display);font-size:2rem;font-variant-numeric:tabular-nums;line-height:1.1}
 .stat span{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+.stat.hstat{text-align:left;position:relative;border-top:4px solid var(--z);cursor:pointer;transition:transform .12s,box-shadow .12s}
+.stat.hstat:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgb(0 0 0/.08);border-color:color-mix(in srgb,var(--z) 60%,var(--line))}
+.stat.hstat .hic{position:absolute;top:12px;right:14px;font-style:normal;font-size:1.3rem;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--z) 28%,transparent)}
+.stat.hstat::after{content:"›";position:absolute;right:14px;bottom:10px;color:var(--muted);font-size:1.2rem;font-weight:700}
 .tbl{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
 table{border-collapse:collapse;width:100%}
 th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
@@ -367,6 +412,8 @@ tbody tr.chk{background:color-mix(in srgb,var(--accent) 8%,var(--surface))}
 dialog{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);color:var(--fg);width:min(560px,calc(100% - 32px));padding:18px;max-height:calc(100% - 32px)}
 dialog::backdrop{background:rgb(0 0 0/.35)}
 [hidden]{display:none!important}
+.newver{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:60;display:flex;gap:12px;align-items:center;background:var(--nav);color:var(--nav-fg);border-radius:12px;padding:10px 14px;box-shadow:0 6px 24px rgb(0 0 0/.25);font-weight:600}
+.newver .link{color:var(--nav-muted)}
 #login-ov{background:var(--bg)} #login-form{max-width:400px;display:flex;flex-direction:column;gap:4px}
 .who-am{font-size:.75rem;color:var(--nav-muted,#9aa);padding:14px 16px 10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:auto}
 .who-am .link{color:var(--nav-fg,#fff);font-size:.75rem}   /* lo oculto queda oculto aunque su clase tenga display */
@@ -644,7 +691,17 @@ tr.bkwarn td{background:color-mix(in srgb,var(--danger) 7%,transparent)}
 .person .nm{font-weight:700;flex:1;min-width:0;overflow-wrap:anywhere;display:flex;flex-direction:column;gap:3px}
 .person .t{font-variant-numeric:tabular-nums;font-size:.85rem;color:var(--muted)}
 .person .t.long{color:var(--warn);font-weight:700}
-.done{display:flex;gap:3px;flex-wrap:wrap}
+.done{display:flex;gap:3px;flex-wrap:wrap;align-items:center}
+.done .st{font-size:.72rem;font-weight:700;border-radius:999px;padding:2px 8px;font-variant-numeric:tabular-nums;border:1.5px solid var(--bc,var(--line));background:transparent;color:var(--bc,var(--muted));outline:0}
+.done .st.done{background:color-mix(in srgb,var(--bc) 12%,transparent);border-color:transparent;color:color-mix(in srgb,var(--bc) 70%,var(--muted));opacity:.75}
+.done .st.now,.done .st.next{background:var(--bc);border-color:var(--bc);color:#fff;box-shadow:0 0 0 2px color-mix(in srgb,var(--bc) 30%,transparent)}
+.done .st.pend{border-style:dashed}
+.done .st.esp{--bc:var(--warn)}
+.done .st.skip{opacity:.5;text-decoration:line-through;border-style:dotted}
+.done .st-sep{font-style:normal;color:var(--muted);font-size:.8rem;margin:0 -1px}
+.done .st-dbl{width:1px;height:16px;background:var(--line);margin:0 4px}
+.done .st-prog{margin-left:4px;font-size:.72rem;font-weight:700;color:var(--muted)}
+.person .t small.wmin{display:block;font-weight:600;color:var(--muted);font-size:.75rem;margin-top:2px}
 .done span{font-size:.7rem;font-weight:700;background:color-mix(in srgb,var(--bc) 18%,transparent);color:var(--bc);border-radius:4px;padding:1px 5px;font-variant-numeric:tabular-nums}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
 @media (max-width:460px){.grid{grid-template-columns:1fr 1fr}}
@@ -890,6 +947,16 @@ tr.bkwarn td{background:color-mix(in srgb,var(--danger) 7%,transparent)}
 .llbox{font-family:var(--f-display);font-size:clamp(2.4rem,7vw,5.5rem);font-weight:700;color:var(--bc)}
 .lltime{position:absolute;top:14px;right:20px;color:var(--muted);font-size:1.1rem}
 .llnow.empty .llname{color:var(--muted);font-size:2rem}
+.llnow.active{background:color-mix(in srgb,var(--bc) 22%,var(--surface));border-width:5px;animation:llpulse 1.2s ease-in-out 4}
+.lltag{position:absolute;top:14px;left:20px;font-size:1.05rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.llnow.active .lltag{color:var(--bc)}
+.llq{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:14px;font-size:1.25rem}
+.llq > span{color:var(--muted);font-weight:700;text-transform:uppercase;font-size:.9rem;letter-spacing:.06em}
+.llq b{border:2px dashed var(--bc);border-radius:12px;padding:6px 12px;color:var(--bc)}
+.llh{margin:22px 0 0;font-size:1.1rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.llh + .llprev{margin-top:10px}
+.lllogo{height:46px;width:auto;background:var(--nav);border-radius:10px;padding:6px 10px}
+.llbar{flex-wrap:wrap}
 .llgrid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}
 @media (max-width:900px){.llgrid{grid-template-columns:1fr}}
 .llwait{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:8px}
@@ -1127,6 +1194,7 @@ th.mc.sub small{display:block;font-weight:400}
     <div class="wrap top">
       <h1 id="title">Inicio</h1>
       <span class="date" id="today"></span><span class="clock" id="clock" aria-label="Hora actual"></span>
+      <button type="button" class="qs-btn" id="qs-open" title="Buscar una persona (tecla /)" hidden>🔍 Buscar persona <kbd>/</kbd></button>
       <div class="acts" id="top-acts"></div>
     </div>
 
@@ -1162,7 +1230,8 @@ th.mc.sub small{display:block;font-weight:400}
               <button class="btn sm" id="cal-today">Hoy</button>
               <button class="icon" id="cal-next" aria-label="Mes siguiente">›</button>
             </div>
-            <div class="cal-legend"><span><span class="cv ok">2301 · D14</span> toda su gente citada</span><span><span class="cv no">2301 · D14</span> falta gente por citar</span><span>Cada etiqueta: ensayo · medida que le toca ese día. La saturación de los box está en Calendarización.</span></div>
+            <p class="cal-legend" style="display:block">Cada etiqueta: <b>personas que vienen</b> · ensayo · medida. En gris y con «~», las previstas que aún no tienen cita. <i class="cvwarn">●</i> falta gente por citar. 👥 total de personas del día.</p>
+            <div class="cal-ecol" id="cal-ecol"></div>
             <div class="cal" id="cal-grid"></div>
           </div>
           <div id="cal-sat"></div>
@@ -1540,6 +1609,7 @@ th.mc.sub small{display:block;font-weight:400}
 
 <div id="claim-pop" class="claimpop" hidden role="alert"></div>
 
+<div id="newver" class="newver" hidden role="status"><span>🔄 Hay una versión nueva de la aplicación.</span><button type="button" class="btn sm primary" id="newver-go">Recargar</button><button type="button" class="link" id="newver-later">Más tarde</button></div>
 <div id="login-ov" class="seedov" hidden><form class="card" id="login-form">
   <h2>Clínica · Entrar</h2>
   <p class="hint">Entra con el usuario que te ha dado quien administra el sistema: un nombre (p. ej. <b>recepcion</b>) o tu correo.</p>
@@ -2098,6 +2168,7 @@ function go(v){
   if (v !== "registro" && regDate !== today){ regDate = today; $("#reg-date").value = today; subVisits(); }
   if (v !== "voluntarios" && pickFor && v !== "reclutamiento") pickFor = null;
   renderTopActs(); renderView(); renderPanel();
+  $("#qs-open").hidden = !QS_VIEWS.has(v);
   window.scrollTo(0, 0);
 }
 window.addEventListener("hashchange", () => go(location.hash.slice(1)));
@@ -2106,10 +2177,13 @@ function navTo(v){ if (location.hash === "#" + v) go(v); else location.hash = v;
 function renderTopActs(){
   const a = $("#top-acts");
   a.innerHTML = view === "voluntarios" ? `<button class="btn" id="cf-open" title="Crear o gestionar características nuevas de las panelistas">⚙️ Características</button><button class="btn primary" id="new-vol">+ Nueva panelista</button>` :
+                view === "agenda" || view === "recepcion" ? `<button class="btn" id="print-day" title="Imprimir la lista de citas del día">🖨️ Imprimir el día</button>` :
                 "";
 }
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-hgo]"); if (b) navTo(b.dataset.hgo); });
 $("#top-acts").addEventListener("click", e => {
   if (e.target.id === "new-vol") openVolForm(null);
+  if (e.target.id === "print-day") printDay(view === "agenda" ? agView : today);
   if (e.target.id === "cf-open") openCf();
   if (e.target.id === "new-ens") openEnsForm(null, "cal");
 });
@@ -2165,11 +2239,9 @@ function renderHome(){
   const enClinica = regDate === today ? visits.filter(v => v.lugar !== "fin").length : 0;
   const pend = todayAgenda.filter(agPending);
   $("#home-stats").innerHTML = `
-    <div class="stat"><b>${vols.size}</b><span>Voluntarias en la base</span></div>
-    <div class="stat"><b>${ensayos.filter(e => e.estado === "reclutamiento").length}</b><span>En reclutamiento</span></div>
-    <div class="stat"><b>${ensayos.filter(e => e.estado === "en_marcha").length}</b><span>Ensayos en marcha</span></div>
-    <div class="stat"><b>${todayAgenda.length}</b><span>Citadas hoy</span></div>
-    <div class="stat"><b>${enClinica}</b><span>Ahora en la clínica</span></div>`;
+    ${[["voluntarios", "base", "👤", vols.size, "Voluntarias en la base"], ["reclutamiento", "base", "📣", ensayos.filter(e => e.estado === "reclutamiento").length, "En reclutamiento"],
+       ["ensayos", "base", "🧪", ensayos.filter(e => e.estado === "en_marcha").length, "Ensayos en marcha"], ["agenda", "rec", "📅", todayAgenda.length, "Citadas hoy"], ["tablero", "box", "🏥", enClinica, "Ahora en la clínica"]]
+      .map(([go, z, ic, n, l]) => `<button type="button" class="stat hstat" data-z="${z}" data-hgo="${go}" title="Ir a ${esc(TITLES[go] || go)}"><i class="hic" aria-hidden="true">${ic}</i><b>${n}</b><span>${l}</span></button>`).join("")}`;
   subMedAll(); subAv();
   /* avisos de hoy */
   const av = avItems(), items = [];
@@ -2178,6 +2250,10 @@ function renderHome(){
     items.push(`<div class="hai bad" style="${ec(x.e.id)}"><span class="ic">📄</span><div class="col" style="gap:4px;flex:1"><b><span style="color:var(--ec)">${esc(x.e.codigo)}</span> · se ${l.length === 1 ? "ha ido" : "han ido"} sin marcar el PDF de explicación</b><div class="avl">${l.map(v => `<label class="avpdf"><input type="checkbox" data-pdfx="${x.e.id}|${v.volId}"> ${esc(v.nombre || "")}</label>`).join("")}</div></div></div>`); });
   const sinPeso = {};
   (regDate === today ? visits : []).filter(v => v.lugar === "fin" && v.volId).forEach(v => { const t = weighTiempo(v); if (!t || !avPanelReady) return; if (!pesoOf(v.ensayo, v.volId, t.id)) (sinPeso[v.ensayo + "|" + t.id] = sinPeso[v.ensayo + "|" + t.id] || {e: ens(v.ensayo), t, l: []}).l.push(v); });
+  /* copia de seguridad completa: aviso en Inicio si hace más de una semana (o nunca, habiendo datos) */
+  { const fd = fullCopyDays(), hay = vols.size > 0 || ensayos.length > 0, ini = startFecha ? dayDiff(startFecha.slice(0, 10), today) : null;
+    if (fullCopy !== undefined && hay && (fd !== null ? fd > 7 : (ini === null || ini > 7)))
+      items.push(`<div class="hai w"><span class="ic">💾</span><div class="col" style="gap:4px;flex:1"><b>${fd !== null ? `Hace ${fd} días que no se descarga la copia de seguridad completa` : "Todavía no se ha descargado ninguna copia de seguridad completa"}</b><small>Descárgala en Administración → Copia de seguridad y guárdala en un sitio seguro.</small></div><button class="btn sm primary" data-hgo="copia">Ir a la copia</button></div>`); }
   Object.values(sinPeso).filter(x => x.e).forEach(x => items.push(`<div class="hai bad" style="${ec(x.e.id)}"><span class="ic">⚠️</span><div class="col" style="gap:4px;flex:1"><b><span style="color:var(--ec)">${esc(x.e.codigo)}</span> · ${esc(medShort(x.t))}: ${x.l.length === 1 ? "se ha ido" : "se han ido"} sin registrar el peso</b><small>${x.l.map(v => esc(v.nombre)).join(", ")}</small></div><button class="btn sm primary" data-avpn="${x.e.id}">Poner pesos</button></div>`));
   $("#home-av").innerHTML = items.join("") || `<div class="avok">✓ Nada urgente hoy.</div>`;
   renderNoShows();
@@ -2236,7 +2312,8 @@ function calPlan(){
   for (const e of ensayos){
     const m = medAll[e.id]; if (!m || e.estado === "cancelado" || e.archivado || !e.inicio || isPend(e)) continue;
     const seen = new Set();
-    Object.entries(repartoOf(e)).forEach(([st, n]) => tiemposOf(m).forEach(t => { const off = tOff(t, e.inicio); if (off === null) return; const d = addDays(st, off), k = d + "|" + t.id; if (seen.has(k)) return; seen.add(k); (out[d] = out[d] || []).push({e, t, m}); }));
+    Object.entries(repartoOf(e)).forEach(([st, n]) => tiemposOf(m).forEach(t => { const off = tOff(t, e.inicio); if (off === null) return; const d = addDays(st, off), k = d + "|" + t.id;
+      if (seen.has(k)){ const x = (out[d] || []).find(y => y.e === e && y.t === t); if (x) x.plan += +n || 0; return; } seen.add(k); (out[d] = out[d] || []).push({e, t, m, plan: +n || 0}); }));
   }
   return out;
 }
@@ -2325,15 +2402,27 @@ function renderCal(){
   const start = addDays(monthStart(calMonth), -lead);
   const sched = calPlan();
   const agBy = {}; calAg.forEach(a => (agBy[a.fecha] = agBy[a.fecha] || []).push(a));
+  /* un color por ensayo (solo en el calendario): los ensayos que salen este mes, por orden de código */
+  const end0 = addDays(start, Math.ceil((lead + new Date(y, m, 0).getDate()) / 7) * 7 - 1), inMonth = new Map();
+  Object.entries(sched).forEach(([d, l]) => { if (d >= start && d <= end0) l.forEach(x => inMonth.set(x.e.id, x.e)); });
+  calAg.forEach(a => { if (a.fecha >= start && a.fecha <= end0 && a.ensayo && ens(a.ensayo)) inMonth.set(a.ensayo, ens(a.ensayo)); });
+  const monthE = [...inMonth.values()].sort(byCode), eCol = {}; monthE.forEach((e, i) => eCol[e.id] = RC_PAL[i % RC_PAL.length]);
+  $("#cal-ecol").innerHTML = monthE.map(e => `<span class="cle" style="--ce:${eCol[e.id]}" title="${esc(e.nombre)}"><i></i>${esc(e.codigo)}</span>`).join("");
   let h = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].map(w => `<div class="wd">${w}</div>`).join("");
   const weeks = Math.ceil((lead + new Date(y, m, 0).getDate()) / 7);
   for (let k = 0; k < weeks * 7; k++){
     const d = addDays(start, k), dd = new Date(d + "T12:00:00");
     const md = (sched[d] || []).slice().sort((a, b) => byCode(a.e, b.e));
+    /* personas de cada ensayo ese día: las citadas; si aún no hay ninguna citada, las previstas (en otro tono) */
+    const dayAg = (agBy[d] || []).filter(a => !a.alta);
+    const rows = md.map(x => { const n = dayAg.filter(a => a.ensayo === x.e.id && (!a.tiempoId || a.tiempoId === x.t.id)).length; return {...x, n, prev: !n}; });
+    dayAg.forEach(a => { if (a.ensayo && ens(a.ensayo) && !rows.some(r => r.e.id === a.ensayo && (!a.tiempoId || r.t.id === a.tiempoId))){ const e = ens(a.ensayo), t = tiemposOf(medAll[a.ensayo]).find(z => z.id === a.tiempoId) || {nombre: a.medida || ""}, r = rows.find(z => z.e === e && z.t === t);
+      if (r) r.n++; else rows.push({e, t, n: 1, prev: false, extra: true}); } });
+    const tot = rows.reduce((s2, r) => s2 + (r.prev ? 0 : r.n), 0), totPrev = rows.reduce((s2, r) => s2 + (r.prev ? (r.plan || 0) : 0), 0);
     const cls = ["d", d.slice(0,7) !== calMonth ? "out" : "", dd.getDay() % 6 === 0 ? "we" : "", d === today ? "today" : ""].join(" ");
     h += `<button class="${cls}" data-day="${d}" aria-pressed="${d===calDay}" aria-label="${esc(longDay(d))}">
-      <span class="n">${dd.getDate()}</span>
-      ${md.slice(0, 6).map(x => { const c = calCitedState(x); return `<span class="cv ${c.tot ? (c.ok ? "ok" : "no") : "na"}" title="${esc(x.e.codigo)} · ${esc(x.e.nombre)} · ${esc(x.t.nombre)}\n${c.tot ? `${c.n} de ${c.tot} citadas` : "sin panel todavía"}">${esc(String(x.e.codigo).replace(/^Ensayo\s*/i, ""))} · ${esc(medShort(x.t))}</span>`; }).join("")}${md.length > 6 ? `<span class="cvmore">+${md.length - 6}</span>` : ""}
+      <span class="dtop"><span class="n">${dd.getDate()}</span>${tot || totPrev ? `<span class="dtot" title="Personas que vienen ese día${totPrev ? " (las previstas aún sin cita, aparte)" : ""}">👥 ${tot}${totPrev ? `<small> +${totPrev} prev.</small>` : ""}</span>` : ""}</span>
+      ${rows.slice(0, 6).map(x => { const c = x.extra ? {tot: 0} : calCitedState(x); return `<span class="cv ce${x.prev ? " prev" : ""}" style="--ce:${eCol[x.e.id] || "var(--muted)"}" title="${esc(x.e.codigo)} · ${esc(x.e.nombre)} · ${esc(x.t.nombre || "")}\n${x.prev ? `Previstas: ${x.plan || 0} (aún sin cita)` : `Vienen ${x.n}`}${c.tot ? ` · ${c.n} de ${c.tot} citadas en total` : ""}"><b class="cvn">${x.prev ? "~" + (x.plan || 0) : x.n}</b>${c.tot && !c.ok && !x.prev ? '<i class="cvwarn" title="Falta gente por citar">●</i>' : ""} ${esc(String(x.e.codigo).replace(/^Ensayo\s*/i, ""))} · ${esc(String(medShort(x.t) || "").replace(/\s*\(.*\)$/, ""))}</span>`; }).join("")}${rows.length > 6 ? `<span class="cvmore">+${rows.length - 6}</span>` : ""}
     </button>`;
   }
   $("#cal-grid").innerHTML = h;
@@ -2650,6 +2739,61 @@ $("#ficha").addEventListener("change", e => { if (e.target.dataset.pe) setPart(e
 document.addEventListener("keydown", e => {
   if (e.key !== "Escape" || document.querySelector("dialog[open]")) return;
   if (fichaId){ fichaId = null; renderFicha(); } else if (selected){ selected = null; renderPanel(); renderView(); }
+});
+
+/* ===== hoja del día para imprimir: usa los datos que ya hay, sin coste ===== */
+async function printDay(d){
+  const l = (await dayList(d)).filter(a => !a.anulada).sort(agSort);
+  const tel = a => { const v = a.volId && vols.get(a.volId); return v ? v.telefono || "" : a.telefono || ""; };
+  let area = $("#print-area"); if (!area){ area = document.createElement("div"); area.id = "print-area"; document.body.appendChild(area); }
+  area.innerHTML = `<h1>Citas del ${esc(longDay(d))}</h1><p>${l.length} citas · impreso el ${esc(dm(today))} a las ${hm(new Date().toISOString())}</p>
+    <table><thead><tr><th>Hora</th><th>Nombre</th><th>Ensayo · medida</th><th>Teléfono</th><th>Llegó</th><th>Notas</th></tr></thead><tbody>
+    ${l.map(a => `<tr><td>${esc(a.hora || "—")}</td><td><b>${esc(a.nombre || "")}</b>${a.doble ? " (doble)" : ""}</td><td>${a.alta ? "Nuevo voluntario" : `${esc(ens(a.ensayo) ? ens(a.ensayo).codigo : "")}${a.medida ? " · " + esc(a.medida) : ""}`}${Array.isArray(a.pasos) && a.pasos.length ? " · solo repetir" : ""}</td><td>${esc(tel(a))}</td><td class="pbox">${a.llegada ? "✓ " + esc(a.horaLlegada ? hm(a.horaLlegada) : "") : "☐"}</td><td></td></tr>`).join("") || `<tr><td colspan="6">No hay citas este día.</td></tr>`}
+    </tbody></table>`;
+  document.body.classList.add("printing");
+  setTimeout(() => { window.print(); setTimeout(() => document.body.classList.remove("printing"), 500); }, 50);
+}
+
+/* ===== buscador rápido de personas: su ficha, si está ahora en la clínica y sus próximas citas ===== */
+const QS_VIEWS = new Set(["inicio", "recepcion", "agenda", "recordatorios", "tablero", "voluntarios", "paneles", "calendario", "llamada"]);
+document.body.insertAdjacentHTML("beforeend", `<dialog id="qs-dlg" class="qs-dlg" aria-label="Buscar una persona"><div class="qs-in"><span aria-hidden="true">🔍</span><input id="qs-q" type="search" placeholder="Nombre, apellidos, código o teléfono" autocomplete="off"><button type="button" class="btn sm" id="qs-x">Cerrar</button></div><div id="qs-res" class="qs-res"></div></dialog>`);
+function qsOpen(){ const d = $("#qs-dlg"); if (!d.open) d.showModal(); $("#qs-q").value = ""; qsRender(); setTimeout(() => $("#qs-q").focus(), 30); }
+function qsRender(){
+  const raw = $("#qs-q").value.trim(), box = $("#qs-res");
+  if (raw.length < 2){ box.innerHTML = `<p class="hint" style="padding:10px 4px">Escribe al menos 2 letras o números. Ejemplos: «marta pé», «1234», «655 12».</p>`; return; }
+  const toks = norm(raw).split(/\s+/).filter(Boolean), dig = raw.replace(/\D/g, "");
+  const hits = [];
+  for (const v of vols.values()){
+    if (v.borrado) continue;
+    const hay = norm(`${v.nombre || ""} ${v.apellidos || ""} ${v.codigo || ""}`), tel = String(v.telefono || "").replace(/\D/g, "") + " " + String(v.telefono2 || "").replace(/\D/g, "");
+    const ok = toks.every(t => hay.includes(t)) || (dig.length >= 4 && dig.length === raw.replace(/\s/g, "").length && tel.includes(dig));
+    if (ok) hits.push(v); if (hits.length > 60) break;
+  }
+  const visHoy = id => (regDate === today ? visits : []).find(x => x.volId === id && x.fecha === today && x.lugar !== "fin");
+  const agAll = [...todayAgenda, ...remAg], citasOf = id => { const seen = new Set(); return agAll.filter(a => a.volId === id && !a.anulada && a.fecha >= today && !(a.fecha === today && a.llegada) && !seen.has(a.id) && seen.add(a.id)).sort((a, b) => (a.fecha + (a.hora || "")).localeCompare(b.fecha + (b.hora || ""))).slice(0, 3); };
+  const rows = hits.map(v => ({v, vis: visHoy(v.id), cit: citasOf(v.id)})).sort((a, b) => (!!b.vis - !!a.vis) || ((b.cit[0] && b.cit[0].fecha === today) - (a.cit[0] && a.cit[0].fecha === today)) || (a.v.apellidos || "").localeCompare(b.v.apellidos || "", "es")).slice(0, 8);
+  const where = x => x.lugar === "box" ? "en " + boxNames[x.box - 1] : x.lugar === "salida" ? "en recepción, a por su próxima cita" : "en la sala de espera";
+  box.innerHTML = rows.map(({v, vis, cit}) => `<div class="qsr"><button type="button" class="qsn" data-qsf="${v.id}"><b>${esc(v.apellidos || "")}, ${esc(v.nombre || "")}</b><small>nº ${esc(v.codigo || "—")}${v.telefono ? " · " + esc(v.telefono) : ""}</small></button>
+      <div class="qsa">${vis ? `<button type="button" class="qsb now" data-qsv="${vis.id}">🏥 Ahora ${esc(where(vis))} ›</button>` : ""}
+      ${cit.map(a => `<button type="button" class="qsb" data-qsa="${a.fecha}" style="${ec(a.ensayo)}">📅 ${a.fecha === today ? "Hoy" : esc(dm(a.fecha))}${a.hora ? " " + esc(a.hora) : ""}${a.ensayo && ens(a.ensayo) ? ` · <span style="color:var(--ec)">${esc(ens(a.ensayo).codigo)}</span>` : ""}${a.medida ? " · " + esc(a.medida) : ""} ›</button>`).join("") || (vis ? "" : `<span class="hint">Sin citas próximas</span>`)}</div></div>`).join("")
+    || `<p class="hint" style="padding:10px 4px">No se ha encontrado a nadie con «${esc(raw)}».</p>`;
+}
+$("#qs-open").addEventListener("click", qsOpen);
+$("#qs-x").addEventListener("click", () => $("#qs-dlg").close());
+$("#qs-q").addEventListener("input", qsRender);
+$("#qs-res").addEventListener("click", e => {
+  const f = e.target.closest("[data-qsf]"), vv = e.target.closest("[data-qsv]"), a = e.target.closest("[data-qsa]");
+  if (!f && !vv && !a) return;
+  $("#qs-dlg").close();
+  if (f) openFicha(f.dataset.qsf);
+  else if (vv){ navTo("tablero"); setTimeout(() => { selected = vv.dataset.qsv; confirmDel = false; renderPanel(); renderView(); }, 50); }
+  else { navTo("agenda"); setTimeout(() => { setAgView(a.dataset.qsa); renderAgenda(); }, 50); }
+});
+document.addEventListener("keydown", e => {
+  if (e.key !== "/" || e.ctrlKey || e.metaKey || e.altKey || document.querySelector("dialog[open]")) return;
+  const ae = document.activeElement; if (ae && ae.matches && ae.matches("input,textarea,select,[contenteditable]")) return;
+  if (!QS_VIEWS.has(view)) return;
+  e.preventDefault(); qsOpen();
 });
 
 /* ---- alta / edición ---- */
@@ -5150,7 +5294,7 @@ function renderBackup(){
       <div class="row" style="gap:10px;align-items:end"><div class="field"><label class="lbl" for="bk-sin-hasta">Hasta el día</label><input type="date" id="bk-sin-hasta" value="${addDays(today, -1)}"></div>
       <button class="btn" id="bk-sin-dl">Descargar copia</button><button class="btn danger" id="bk-sin-del" disabled>Borrar del sistema</button></div>
       <p class="hint" id="bk-sin-txt" style="margin-top:6px">Primero descarga la copia; después se podrá borrar.</p></div></details>`;
-  $("#bk-body").insertAdjacentHTML("afterbegin", bkTopHtml()); if (!dbUse && !dbCounting) countDb(false);
+  $("#bk-body").insertAdjacentHTML("afterbegin", bkTopHtml()); /* recuento solo con el botón */
 }
 async function bkGather(e){
   const [ag, vi0, viB, med, pn] = await Promise.all([S.getWhere("agenda", "ensayo", e.id), S.getWhere("visitas", "ensayo", e.id), S.getWhere("visitas", "ensayoB", e.id).catch(() => []), S.getDoc("medidas", e.id).catch(() => null), S.getDoc("panel", e.id).catch(() => null)]);
@@ -6842,11 +6986,20 @@ $("#grid").addEventListener("focusout", () => setTimeout(() => { if (gridDirty &
 /* ======================= CIRCUITO: tablero ======================= */
 const chipDone = v => {
   const pr = circProgress(v);
-  if (!pr.steps.length) return (v.historial||[]).filter(h => !h.espera).map(h => `<span style="${bc(h.box)}" title="${esc(boxNames[h.box-1])} · ${esc(h.atendidoPor)}">${bL(h.box)}</span>`).join("");
-  return pr.res.map((r, i) => r.st.t === "espera"
-      ? `<span class="${r.h ? "espd" : "need esp"}${pr.nowIdx === i ? " nowc" : ""}" title="Espera ${r.st.min} min">⏱${r.st.min}'</span>`
-      : `<span class="${r.h ? "" : "need"}${pr.nowIdx === i ? " nowc" : ""}${pr.next === i && pr.nowIdx !== i ? " nextc" : ""}" style="${bc(r.st.box)}" title="${r.h ? esc(boxNames[r.st.box-1]) + " · " + esc(r.h.atendidoPor) : (pr.next === i ? "Siguiente: " : "Le falta: ") + esc(boxNames[r.st.box-1])}">${bL(r.st.box)}</span>`).join("")
-    + pr.extra.filter(h => !h.espera).map(h => `<span style="${bc(h.box)}" title="Fuera del circuito · ${esc(h.atendidoPor)}">${bL(h.box)}</span>`).join("");
+  if (!pr.steps.length) return (v.historial||[]).filter(h => !h.espera).map(h => `<span class="st done" style="${bc(h.box)}" title="${esc(boxNames[h.box-1])} · ${esc(h.atendidoPor)}">✓ ${bL(h.box)}</span>`).join("");
+  /* el circuito entero, en orden: ✓ hecho (apagado) · le toca ahora (lleno) · pendiente (con borde) · ↻/✕ no se hace hoy */
+  const chip = (r, i) => {
+    const now = pr.nowIdx === i, nx = pr.next === i && !now;
+    if (r.h && r.h.skip) return `<span class="st skip" style="${r.st.t === "box" ? bc(r.st.box) : ""}" title="${r.h.parcial ? "Se repite otro día" : "No se hace: no puede seguir"}">${r.h.parcial ? "↻" : "✕"} ${r.st.t === "box" ? bL(r.st.box) : "⏱"}</span>`;
+    if (r.st.t === "espera") return `<span class="st esp${r.h ? " done" : now ? " now" : ""}" title="Espera ${r.st.min} min">${r.h ? "✓ " : ""}⏱ ${r.st.min}'</span>`;
+    const lbl = r.h ? esc(boxNames[r.st.box-1]) + " · " + esc(r.h.atendidoPor) : (now ? "Ahora en " : nx ? "Le toca: " : "Le falta: ") + esc(boxNames[r.st.box-1]) + ((r.st.pruebas || []).length ? " · " + esc(r.st.pruebas.join(", ")) : "");
+    return `<span class="st ${r.h ? "done" : now ? "now" : nx && !isDoble(v) ? "next" : "pend"}" style="${bc(r.st.box)}" title="${lbl}">${r.h ? "✓ " : ""}${bL(r.st.box)}</span>`;
+  };
+  const segs = isDoble(v) ? vEnsayos(v).map(x => pr.res.map((r, i) => ({r, i})).filter(({r}) => r.st._e === x.ensayo)) : [pr.res.map((r, i) => ({r, i}))];
+  const total = pr.res.filter(r => !(r.h && r.h.skip)).length, hechos = pr.res.filter(r => r.h && !r.h.skip).length;
+  return segs.map(seg => seg.map(({r, i}) => chip(r, i)).join('<i class="st-sep">›</i>')).join('<i class="st-dbl"></i>')
+    + pr.extra.filter(h => !h.espera).map(h => `<span class="st done extra" style="${bc(h.box)}" title="Fuera del circuito · ${esc(h.atendidoPor)}">✓ ${bL(h.box)}</span>`).join("")
+    + (total ? `<span class="st-prog" title="${hechos} de ${total} pasos hechos">${hechos}/${total}</span>` : "");
 };
 /* espera en curso: minutos que faltan */
 const esperaLeft = v => v.lugar === "espera" && v.esperaMin ? v.esperaMin - mins(v.desde) : null;
@@ -6885,8 +7038,8 @@ const nsTags = v => Object.entries((v && v.noSigue) || {}).map(([eid, x]) => `<s
 function personBtn(v, timeIso){
   const m = timeIso ? mins(timeIso) : 0, e = ens(v.ensayo), late = isLate(v), es = espStatus(v);
   return `<button class="person${e?" has-e":""}${selected===v.id?" sel":""}${es && es.ok ? " canpass" : ""}${isDoble(v) && ecOverride ? " split2" : ""}" data-id="${v.id}" style="${ec(v.ensayo)}${isDoble(v) && ecOverride ? rcEc2(v.doble[0].ensayo) : ""}">
-    <span class="nm"><span class="${late?"late-n":""}">${esc(v.nombre)} ${late ? ltBadge(visitLate(v)) : ""}</span>${e ? `<span>${ensTag(v.ensayo)}${isDoble(v) ? v.doble.map(x => ensTag(x.ensayo)).join("") + '<span class="tag dbl">👥 Doble</span>' : ""}${nsTags(v)}</span>` : v.alta ? `<span>${altaTag(v)}</span>` : ""}<span class="done">${chipDone(v)}</span>${v.lugar !== "fin" && askFields(v.volId && vols.get(v.volId)).length ? `<span class="askb" title="Hay que preguntarle: ${esc(askFields(vols.get(v.volId)).map(f => f.l).join(", "))}">❓</span>` : ""}${["recepcion", "espera"].includes(v.lugar) ? nextLbl(v) : ""}${claimOf(v) ? `<span class="claimbadge" title="La reclaman en ${esc(boxNames[claimOf(v).box - 1])}">🙋 ${esc(bL(claimOf(v).box))}</span>` : ""}${v.lugar !== "fin" && pendingVisitForms(v).length ? `<span class="fmbadge" title="Tiene formulario pendiente de enviar en esta visita">📋</span>` : ""}</span>
-    ${es ? (es.ok ? `<span class="t ready">${esc(es.ok)}</span>` : `<span class="t wait">${esc(es.wait)}</span>`)
+    <span class="nm"><span class="${late?"late-n":""}">${esc(v.nombre)} ${late ? ltBadge(visitLate(v)) : ""}</span>${e ? `<span>${ensTag(v.ensayo)}${isDoble(v) ? v.doble.map(x => ensTag(x.ensayo)).join("") + '<span class="tag dbl">👥 Doble</span>' : ""}${nsTags(v)}</span>` : v.alta ? `<span>${altaTag(v)}</span>` : ""}<span class="done">${chipDone(v)}</span>${v.lugar !== "fin" && askFields(v.volId && vols.get(v.volId)).length ? `<span class="askb" title="Hay que preguntarle: ${esc(askFields(vols.get(v.volId)).map(f => f.l).join(", "))}">❓</span>` : ""}${["recepcion", "espera"].includes(v.lugar) && !es ? nextLbl(v) : ""}${claimOf(v) ? `<span class="claimbadge" title="La reclaman en ${esc(boxNames[claimOf(v).box - 1])}">🙋 ${esc(bL(claimOf(v).box))}</span>` : ""}${v.lugar !== "fin" && pendingVisitForms(v).length ? `<span class="fmbadge" title="Tiene formulario pendiente de enviar en esta visita">📋</span>` : ""}</span>
+    ${es ? `<span class="t ${es.ok ? "ready" : "wait"}">${esc(es.ok || es.wait)}${v.lugar === "espera" && v.desde ? `<small class="wmin">⏱ ${Math.max(0, mins(v.desde))} min</small>` : ""}</span>`
       : timeIso ? (() => { const pv = v.lugar === "box" ? boxPrevisto(v.box, currentPruebas(v)) : null;
           const over = pv ? m > pv : m >= 30 && v.lugar !== "fin";
           return `<span class="t${over ? " long" : ""}"${pv ? ` title="Previsto: ${pv} min"` : ""}>${v.lugar === "fin" ? hm(v.finalizada) : dur(m)}${pv ? ` / ${pv}'` : ""}</span>`; })() : ""}
@@ -7800,7 +7953,7 @@ $("#bk-body").addEventListener("click", ev => {
   if (ev.target.id === "db-recount"){ countDb(true); ev.target.textContent = "Contando…"; return; }
   if (ev.target.id === "full-dl") fullDownload();
 });
-setTimeout(() => countDb(false), 20000);
+/* (en la web no se cuenta la base sola: cada recuento lee todos los documentos) */
 
 /* ======================= TIEMPO REAL DE CADA PRUEBA (referencia para ajustarlo a mano) ======================= */
 function realTimes(b){
@@ -7839,6 +7992,16 @@ function addCall(v, b){
   const t = Date.now();
   if (callLog.some(c => c.vid === v.id && c.box === b && t - c.t < 15 * 60000)) return;   /* reclamada y luego pasa al mismo box: una sola llamada */
   const c = {vid: v.id, name: callName(v), box: b, t}; callLog.unshift(c); callLog = callLog.slice(0, 20);
+  callQ.push(c); pumpCalls();
+}
+/* varias llamadas a la vez: hacen cola y salen una detrás de otra, cada una con su sonido y su voz */
+let callQ = [], callCur = null, callTimer = null; const CALL_HOLD = 9000;
+function pumpCalls(){
+  if (callTimer) return;
+  const c = callQ.shift();
+  if (!c){ if (view === "llamada") renderLlamada(); return; }
+  callCur = c;
+  callTimer = setTimeout(() => { callTimer = null; pumpCalls(); }, CALL_HOLD);
   if (view === "llamada"){ renderLlamada(); if (callSound) announce(c); }
 }
 function announce(c){
@@ -7851,14 +8014,18 @@ function announce(c){
 }
 function renderLlamada(){
   const body = $("#ll-body"); if (!body) return;
-  const [last, ...rest] = callLog, fresh = last && Date.now() - last.t < 10 * 60000;
+  const big = callCur || callLog[0], active = !!(callTimer && callCur), fresh = big && Date.now() - big.t < 10 * 60000;
+  const prev = callLog.filter(c => c !== big && !callQ.includes(c)).slice(0, 8);   /* las que aún esperan su turno salen en «A continuación», no aquí */
   const wait = (regDate === today ? visits : []).filter(v => ["recepcion", "espera"].includes(v.lugar)).sort((a, c) => (a.llegada || a.desde || "").localeCompare(c.llegada || c.desde || ""));
-  body.innerHTML = `<div class="llbar"><span class="llclock">${new Date().toLocaleTimeString("es-ES", {hour: "2-digit", minute: "2-digit"})}</span>
+  const hmT = t => new Date(t).toLocaleTimeString("es-ES", {hour: "2-digit", minute: "2-digit"});
+  const logo = (document.querySelector(".brand img") || {}).src;
+  body.innerHTML = `<div class="llbar">${logo ? `<img class="lllogo" src="${logo}" alt="">` : ""}<span class="llclock">${hmT(Date.now())}</span>
       <span class="row" style="gap:8px">${callSound ? `<span class="lt good">🔊 Sonido activado</span><button class="btn sm" id="ll-test">Probar</button>` : `<button class="btn primary" id="ll-sound">🔊 Activar sonido</button>`}<button class="btn sm" id="ll-full">Pantalla completa</button></span></div>
     <div class="llgrid"><div class="col" style="gap:0;min-width:0">
-    ${last ? `<div class="llnow${fresh ? " fresh" : ""}" style="${bc(last.box)}"><span class="llname">${esc(last.name)}</span><span class="llarrow">→</span><span class="llbox">${esc(boxNames[last.box - 1])}</span><span class="lltime">${new Date(last.t).toLocaleTimeString("es-ES", {hour: "2-digit", minute: "2-digit"})}</span></div>`
+    ${big ? `<div class="llnow${active ? " active" : fresh ? " fresh" : ""}" style="${bc(big.box)}"><span class="lltag">${active ? "🔔 Ahora" : "Última llamada"}</span><span class="llname">${esc(big.name)}</span><span class="llarrow">→</span><span class="llbox">${esc(boxNames[big.box - 1])}</span><span class="lltime">${hmT(big.t)}</span></div>`
       : `<div class="llnow empty"><span class="llname">Esperando llamadas…</span></div>`}
-    ${rest.length ? `<div class="llprev">${rest.slice(0, 6).map(c => `<div style="${bc(c.box)}"><b>${esc(c.name)}</b><span>→ ${esc(boxNames[c.box - 1])}</span><small>${new Date(c.t).toLocaleTimeString("es-ES", {hour: "2-digit", minute: "2-digit"})}</small></div>`).join("")}</div>` : ""}
+    ${callQ.length ? `<div class="llq"><span>A continuación</span>${callQ.map(c => `<b style="${bc(c.box)}">${esc(c.name)} → ${esc(boxNames[c.box - 1])}</b>`).join("")}</div>` : ""}
+    ${prev.length ? `<h3 class="llh">Últimas llamadas</h3><div class="llprev">${prev.map(c => `<div style="${bc(c.box)}"><b>${esc(c.name)}</b><span>→ ${esc(boxNames[c.box - 1])}</span><small>${hmT(c.t)}</small></div>`).join("")}</div>` : ""}
     </div>
     <div class="llwait"><h3>En espera <span class="count">${wait.length}</span></h3>
       ${wait.map(v => { const cl = claimOf(v); return `<div class="llw${cl ? " called" : ""}"${cl ? ` style="${bc(cl.box)}"` : ""}><b>${esc(callName(v))}</b>${cl ? `<span>→ ${esc(boxNames[cl.box - 1])}</span>` : `<small>llegó a las ${hm(v.llegada || v.desde)}</small>`}</div>`; }).join("") || `<div class="hint">Nadie esperando.</div>`}</div></div>
@@ -8423,9 +8590,9 @@ function avItems(){
   /* 5) espacio de la base y copia completa */
   const sys = [], pct = dbPct(), fd = fullCopyDays();
   if (pct !== null && pct >= 70) sys.push({kind: "space", pct});
-  /* la copia completa solo se pide cuando hay datos y ha pasado más de un mes (desde la última, o desde la puesta en marcha) */
+  /* la copia completa se pide cuando hay datos y ha pasado más de una semana (desde la última, o desde la puesta en marcha) */
   const hayDatos = vols.size > 0 || ensayos.length > 0, desdeInicio = startFecha ? dayDiff(startFecha.slice(0, 10), today) : null;
-  if (fullCopy !== undefined && hayDatos && (fd !== null ? fd > 30 : (desdeInicio === null || desdeInicio > 30))) sys.push({kind: "full", days: fd});
+  if (fullCopy !== undefined && hayDatos && (fd !== null ? fd > 7 : (desdeInicio === null || desdeInicio > 7))) sys.push({kind: "full", days: fd});
   return {pre, post, pdf, bk, sys};
 }
 /* nombres de unos pasos del circuito de una medida: «VISIA y Fotos Nikon» */
@@ -8678,6 +8845,25 @@ $("#login-forgot").addEventListener("click", async () => {
   catch { $("#login-err").textContent = "No se pudo enviar. Revisa el correo."; }
 });
 $("#logout").addEventListener("click", () => firebase.auth().signOut());
+/* ===== versión nueva: se mira version.txt cada 5 min; se recarga al pulsar o sola de madrugada si no hay nada a medio hacer ===== */
+const APP_VERSION = "20261123002411";
+let newVer = null, newVerLater = 0;
+function unsaved(){
+  if (document.querySelector("dialog[open]")) return "Hay una ventana abierta: termínala o ciérrala antes de recargar.";
+  const ae = document.activeElement; if (ae && ae.matches && ae.matches("input,textarea,select") && !ae.closest("#login-ov")) return "Estás escribiendo en un campo: termina y guárdalo antes de recargar.";
+  if ([...document.querySelectorAll("textarea")].some(t => t.value.trim() && t.offsetParent)) return "Hay un texto escrito sin guardar en esta pantalla: guárdalo antes de recargar.";
+  if (typeof seeding !== "undefined" && seeding) return "Se están escribiendo datos: espera a que termine.";
+  return "";
+}
+async function checkVersion(){
+  try { const r = await fetch("version.txt?t=" + Date.now(), {cache: "no-store"}); if (r.ok){ const v = (await r.text()).trim(); if (v && v !== APP_VERSION){ newVer = v; if (Date.now() > newVerLater) $("#newver").hidden = false; } } } catch {}
+  const h = new Date().getHours();
+  if (newVer && h >= 2 && h < 5 && !unsaved()) location.reload();   /* de madrugada, si no hay nada abierto */
+}
+$("#newver-go").addEventListener("click", () => { const why = unsaved(); if (why){ toast(why); return; } location.reload(); });
+$("#newver-later").addEventListener("click", () => { $("#newver").hidden = true; newVerLater = Date.now() + 30 * 60000; });
+setInterval(checkVersion, 5 * 60000); setTimeout(checkVersion, 20000);
+
 fbInit();
 async function startApp(fdb){
   db = fdb;
