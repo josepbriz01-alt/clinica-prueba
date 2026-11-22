@@ -7924,23 +7924,28 @@ async function countDb(force){
   if (!force && dbUse && Date.now() - new Date(dbUse.fecha).getTime() < 6 * 3600e3) return dbUse;
   dbCounting = true;
   const by = {};
-  for (const c of DB_COLS){ try { by[c] = db ? (await db.collection(c).get()).docs.length : memCol(c).size; } catch { by[c] = 0; } }
-  dbUse = {n: Object.values(by).reduce((a, b) => a + b, 0), by, fecha: new Date().toISOString()};
+  let bytes = 0;
+  for (const c of DB_COLS){ try { const docs = db ? (await db.collection(c).get()).docs : []; by[c] = docs.length; docs.forEach(d => { bytes += 2 * (JSON.stringify(d.data()).length + c.length + d.id.length + 48); }); } catch { by[c] = 0; } }
+  dbUse = {n: Object.values(by).reduce((a, b) => a + b, 0), by, bytes, fecha: new Date().toISOString()};
+  if (db) S.set("config", "espacio", dbUse).catch(() => {});
   try { localStorage.setItem("dbUse", JSON.stringify(dbUse)); } catch {}
   dbCounting = false;
   if (view === "copia") renderBackup(); if (view === "avisos") renderAvisos(); renderAvCount();
   return dbUse;
 }
-const dbPct = () => null;   /* en Firebase no hay tope de registros: el límite gratuito es 1 GB */
+const DB_GB = 1073741824, fmtMB = b => b >= 1048576 ? (b / 1048576).toFixed(1).replace(".", ",") + " MB" : Math.max(1, Math.round(b / 1024)) + " KB";
+const dbPct = () => dbUse && dbUse.bytes ? dbUse.bytes / DB_GB * 100 : null;   /* en Firebase el límite gratuito es 1 GB de datos (no hay tope de registros) */
 let startFecha = null;   /* fecha de puesta en marcha (al vaciar los datos de prueba) */
 function subFullCopy(){ S.getDoc("config", "seed").then(d => { startFecha = d && d.vacio && d.fecha ? d.fecha : null; renderAvCount(); }).catch(() => {});
   S.listenDoc("fullCopy", "config", "copiaCompleta", d => { fullCopy = d || null; if (view === "copia") renderBackup(); if (view === "avisos") renderAvisos(); renderAvCount(); }); }
 const fullCopyDays = () => fullCopy && fullCopy.fecha ? dayDiff(fullCopy.fecha.slice(0, 10), today) : null;
+let espLoaded = false;
 function bkTopHtml(){
+  if (!espLoaded && db){ espLoaded = true; S.getDoc("config", "espacio").then(d => { if (d && d.bytes && (!dbUse || !dbUse.bytes || d.fecha > dbUse.fecha)){ dbUse = d; if (view === "copia") renderBackup(); } }).catch(() => {}); }
   const pct = dbPct(), cls = pct === null ? "none" : pct >= 90 ? "over" : pct >= 70 ? "hi" : "ok", fd = fullCopyDays();
   return `<div class="card bktop"><div class="col" style="gap:6px;flex:1;min-width:260px"><h2>Espacio de la base de datos</h2>
-      ${pct === null ? `<span class="hint">En esta web los datos están en <b>Firebase</b>: no hay límite de registros. El plan gratuito permite <b>1 GB</b> de datos, y con vuestro volumen estáis muy lejos (cada registro ocupa unos pocos KB). El uso real se ve en Firebase → Firestore → <b>Uso</b>.</span><span class="hint">${dbUse ? `Hay ${dbUse.n.toLocaleString("es-ES")} registros · citas ${(dbUse.by.agenda || 0).toLocaleString("es-ES")} · visitas ${(dbUse.by.visitas || 0).toLocaleString("es-ES")} · contado el ${esc(dm(dbUse.fecha.slice(0, 10)))} a las ${hm(dbUse.fecha)}. ` : ""}<button class="link" id="db-recount">${dbUse ? "Volver a contar" : "Contar los registros"}</button> (contar lee toda la base: hazlo solo de vez en cuando)</span>` : `<div class="sat ${cls}"><div class="bar"><i style="width:${Math.min(100, pct)}%"></i></div><span>${pct} %</span></div>
-      <span class="hint">${dbUse.n.toLocaleString("es-ES")} de ${DB_MAX.toLocaleString("es-ES")} registros · citas ${(dbUse.by.agenda || 0).toLocaleString("es-ES")} · visitas ${(dbUse.by.visitas || 0).toLocaleString("es-ES")} · contado el ${esc(dm(dbUse.fecha.slice(0, 10)))} a las ${hm(dbUse.fecha)} <button class="link" id="db-recount">Recalcular</button></span>
+      ${pct === null ? `<span class="hint">En esta web los datos están en <b>Firebase</b>: no hay límite de registros. El plan gratuito permite <b>1 GB</b> de datos, y con vuestro volumen estáis muy lejos (cada registro ocupa unos pocos KB). El uso real se ve en Firebase → Firestore → <b>Uso</b>.</span><span class="hint">${dbUse ? `Hay ${dbUse.n.toLocaleString("es-ES")} registros · citas ${(dbUse.by.agenda || 0).toLocaleString("es-ES")} · visitas ${(dbUse.by.visitas || 0).toLocaleString("es-ES")} · contado el ${esc(dm(dbUse.fecha.slice(0, 10)))} a las ${hm(dbUse.fecha)}. ` : ""}<button class="link" id="db-recount">${dbUse ? "Volver a calcular" : "Calcular el espacio usado"}</button> (lee toda la base: hazlo de vez en cuando, por ejemplo una vez al mes)</span>` : `<div class="sat ${cls}"><div class="bar"><i style="width:${Math.max(1.5, Math.min(100, pct))}%"></i></div><span>${pct < 1 ? pct.toFixed(2).replace(".", ",") : Math.round(pct)} %</span></div>
+      <span class="hint">≈ ${fmtMB(dbUse.bytes)} de 1 GB (estimado) · ${dbUse.n.toLocaleString("es-ES")} registros · citas ${(dbUse.by.agenda || 0).toLocaleString("es-ES")} · visitas ${(dbUse.by.visitas || 0).toLocaleString("es-ES")} · contado el ${esc(dm(dbUse.fecha.slice(0, 10)))} a las ${hm(dbUse.fecha)} <button class="link" id="db-recount">Recalcular</button></span>
       ${pct >= 70 ? `<span class="hint" style="color:var(--warn)">Para liberar espacio: haz la copia de los ensayos finalizados y bórralos del sistema (abajo).</span>` : ""}`}</div>
     <div class="col" style="gap:6px;min-width:240px"><h2>Copia completa</h2><span class="hint">Un Excel con todo: panelistas, ensayos, citas, visitas, paneles y características.${fullCopy && fullCopy.fecha ? ` Última: <b>${esc(dm(fullCopy.fecha.slice(0, 10)))}</b>${fullCopy.por ? " · " + esc(fullCopy.por) : ""}${fd > 30 ? ` <span style="color:var(--warn)">(hace ${fd} días)</span>` : ""}.` : ` <span style="color:var(--warn)">Aún no se ha hecho ninguna.</span>`}</span>
       <button class="btn primary" id="full-dl"${bkBusy ? " disabled" : ""}>Descargar copia completa</button></div></div>`;
@@ -8874,7 +8879,7 @@ $("#login-forgot").addEventListener("click", async () => {
 });
 $("#logout").addEventListener("click", () => firebase.auth().signOut());
 /* ===== versión nueva: se mira version.txt cada 5 min; se recarga al pulsar o sola de madrugada si no hay nada a medio hacer ===== */
-const APP_VERSION = "20261123003705";
+const APP_VERSION = "20261123004012";
 let newVer = null, newVerLater = 0;
 function unsaved(){
   if (document.querySelector("dialog[open]")) return "Hay una ventana abierta: termínala o ciérrala antes de recargar.";
