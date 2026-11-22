@@ -242,6 +242,14 @@ dialog.big{width:min(1100px,calc(100% - 32px));padding:20px;position:fixed}
 .navtog:hover{background:color-mix(in srgb,var(--z,var(--accent)) 25%,var(--nav))}
 .toplogo{height:34px;width:auto;flex:none}
 body.navhid .app{grid-template-columns:1fr}
+/* cabecera: con el menú visible, todo seguido; con el menú oculto, logo a la izquierda, título/fecha/hora en el centro y botones a la derecha */
+.top .tl,.top .tc,.top .tr{display:contents}
+body.navhid .content > .top{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px 16px}
+body.navhid .top .tl,body.navhid .top .tc,body.navhid .top .tr{display:flex;align-items:center;gap:12px;min-width:0}
+body.navhid .top .tc{justify-content:center;flex-wrap:wrap}
+body.navhid .top .tr{justify-content:flex-end;flex-wrap:wrap}
+body.navhid .top .tr .qs-btn,body.navhid .top .tr .acts{margin-left:0}
+@media (max-width:1100px){body.navhid .content > .top{grid-template-columns:auto minmax(0,1fr)} body.navhid .top .tc{grid-column:1 / -1;order:3}}
 body.navhid nav.side{display:none}
 .cal-ecol{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:.78rem;font-weight:700;margin:0 0 6px}
 .cal-ecol .cle{display:inline-flex;align-items:center;gap:5px;color:var(--ce)}
@@ -1200,12 +1208,12 @@ th.mc.sub small{display:block;font-weight:400}
   <div class="content">
     <div class="banner testbar" id="offline" hidden><div class="wrap">Sin conexión con la base de datos. Comprueba internet y recarga la página.</div></div>
     <div class="wrap top">
-      <button type="button" class="navtog" id="nav-toggle" aria-controls="nav" aria-expanded="true" title="Ocultar el menú">☰</button>
-      <img class="toplogo" id="top-logo" alt="Bionos" hidden>
-      <h1 id="title">Inicio</h1>
-      <span class="date" id="today"></span><span class="clock" id="clock" aria-label="Hora actual"></span>
-      <button type="button" class="qs-btn" id="qs-open" title="Buscar una persona (tecla /)" hidden>🔍 Buscar persona <kbd>/</kbd></button>
-      <div class="acts" id="top-acts"></div>
+      <div class="tl"><button type="button" class="navtog" id="nav-toggle" aria-controls="nav" aria-expanded="true" title="Ocultar el menú">☰</button>
+      <img class="toplogo" id="top-logo" alt="Bionos" hidden></div>
+      <div class="tc"><h1 id="title">Inicio</h1>
+      <span class="date" id="today"></span><span class="clock" id="clock" aria-label="Hora actual"></span></div>
+      <div class="tr"><button type="button" class="qs-btn" id="qs-open" title="Buscar una persona (tecla /)" hidden>🔍 Buscar persona <kbd>/</kbd></button>
+      <div class="acts" id="top-acts"></div></div>
     </div>
 
     <main class="wrap">
@@ -8866,7 +8874,7 @@ $("#login-forgot").addEventListener("click", async () => {
 });
 $("#logout").addEventListener("click", () => firebase.auth().signOut());
 /* ===== versión nueva: se mira version.txt cada 5 min; se recarga al pulsar o sola de madrugada si no hay nada a medio hacer ===== */
-const APP_VERSION = "20261123003501";
+const APP_VERSION = "20261123003705";
 let newVer = null, newVerLater = 0;
 function unsaved(){
   if (document.querySelector("dialog[open]")) return "Hay una ventana abierta: termínala o ciérrala antes de recargar.";
