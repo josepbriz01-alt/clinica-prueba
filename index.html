@@ -1533,8 +1533,8 @@ th.mc.sub small{display:block;font-weight:400}
 
 <div id="login-ov" class="seedov" hidden><form class="card" id="login-form">
   <h2>Clínica · Entrar</h2>
-  <p class="hint">Entra con el usuario que te ha dado quien administra el sistema.</p>
-  <div class="field"><label class="lbl" for="login-email">Correo</label><input type="email" id="login-email" autocomplete="username" required></div>
+  <p class="hint">Entra con el usuario que te ha dado quien administra el sistema: un nombre (p. ej. <b>recepcion</b>) o tu correo.</p>
+  <div class="field"><label class="lbl" for="login-email">Usuario o correo</label><input type="text" id="login-email" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
   <div class="field" style="margin-top:10px"><label class="lbl" for="login-pass">Contraseña</label><input type="password" id="login-pass" autocomplete="current-password" required></div>
   <p class="hint" id="login-err" style="color:var(--danger);min-height:1.2em"></p>
   <div class="row" style="justify-content:space-between"><button class="link" type="button" id="login-forgot">He olvidado la contraseña</button><button class="btn primary" type="submit">Entrar</button></div>
@@ -8635,6 +8635,10 @@ function fbAdapter(fs){
   const wrapDoc = r => ({id: r.id, get: () => r.get(), set: (d, o) => r.set(d, o), update: d => r.set(d, {merge: true}), delete: () => r.delete(), onSnapshot: (a, b) => r.onSnapshot(a, b)});
   return {doc: p => wrapDoc(fs.doc(p)), collection: c => fs.collection(c)};
 }
+/* usuario sin @ → usuario@clinica.local (usuarios de puesto, sin correo real); con @ → el correo tal cual */
+const LOGIN_DOM = "clinica.local";
+const loginEmail = t => { t = String(t || "").trim().toLowerCase(); return t.includes("@") ? t : t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "") + "@" + LOGIN_DOM; };
+const isPuesto = em => String(em || "").toLowerCase().endsWith("@" + LOGIN_DOM);
 function fbInit(){
   const cfg = window.FIREBASE_CONFIG;
   if (!window.firebase || !cfg || !cfg.apiKey || String(cfg.apiKey).includes("PEGA")){
@@ -8647,17 +8651,20 @@ function fbInit(){
   let started = false;
   firebase.auth().onAuthStateChanged(u => {
     if (!u){ if (started){ location.reload(); return; } $("#login-ov").hidden = false; setTimeout(() => $("#login-email").focus(), 50); return; }
-    $("#login-ov").hidden = true; $("#who-am").hidden = false; $("#who-email").textContent = u.email;
+    $("#login-ov").hidden = true; $("#who-am").hidden = false; $("#who-email").textContent = isPuesto(u.email) ? u.email.split("@")[0] : u.email;
+    $("#logout").hidden = isPuesto(u.email);   /* los ordenadores de puesto no cierran sesión: la contraseña solo la sabe quien administra */
     if (!started){ started = true; startApp(fbAdapter(fs)); }
   });
 }
 $("#login-form").addEventListener("submit", async ev => {
   ev.preventDefault(); $("#login-err").textContent = "";
-  try { await firebase.auth().signInWithEmailAndPassword($("#login-email").value.trim(), $("#login-pass").value); }
-  catch (e){ const c = String((e && e.code) || ""); $("#login-err").textContent = /password|credential|user-not-found|invalid-email/.test(c) ? "Correo o contraseña incorrectos." : /too-many/.test(c) ? "Demasiados intentos. Espera un momento." : /disabled/.test(c) ? "Este usuario está desactivado." : "No se pudo entrar. Comprueba la conexión."; }
+  try { await firebase.auth().signInWithEmailAndPassword(loginEmail($("#login-email").value), $("#login-pass").value); }
+  catch (e){ const c = String((e && e.code) || ""); $("#login-err").textContent = /password|credential|user-not-found|invalid-email/.test(c) ? "Usuario o contraseña incorrectos." : /too-many/.test(c) ? "Demasiados intentos. Espera un momento." : /disabled/.test(c) ? "Este usuario está desactivado." : "No se pudo entrar. Comprueba la conexión."; }
 });
 $("#login-forgot").addEventListener("click", async () => {
-  const em = $("#login-email").value.trim(); if (!em){ $("#login-err").textContent = "Escribe tu correo y vuelve a pulsar."; $("#login-email").focus(); return; }
+  const raw = $("#login-email").value.trim(); if (!raw){ $("#login-err").textContent = "Escribe tu correo y vuelve a pulsar."; $("#login-email").focus(); return; }
+  if (!raw.includes("@")){ $("#login-err").textContent = "Los usuarios de puesto no tienen correo: pide a quien administra que te cambie la contraseña."; return; }
+  const em = raw;
   try { await firebase.auth().sendPasswordResetEmail(em); $("#login-err").textContent = "Si el correo existe, te llegará un enlace para cambiar la contraseña."; }
   catch { $("#login-err").textContent = "No se pudo enviar. Revisa el correo."; }
 });
