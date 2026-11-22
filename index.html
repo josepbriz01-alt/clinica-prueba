@@ -190,11 +190,11 @@ dialog.big{width:min(1100px,calc(100% - 32px));padding:20px;position:fixed}
 .mini{display:flex;gap:8px;align-items:center;min-width:130px}
 .mini .bar{flex:1}
 /* calendario */
-.cal-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(320px,1fr);gap:16px;align-items:start}
+.cal-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}   /* calendario a todo el ancho; el detalle del día va debajo */
 @media (max-width:1100px){.cal-layout{grid-template-columns:1fr}}
 .cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
 .cal .wd{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);text-align:center;padding:4px 0}
-.cal .d{min-height:92px;border:1px solid var(--line);border-radius:8px;background:var(--bg);padding:5px 6px;display:flex;flex-direction:column;gap:3px;text-align:left;min-width:0;overflow:hidden}
+.cal .d{min-height:118px;border:1px solid var(--line);border-radius:8px;background:var(--bg);padding:5px 6px;display:flex;flex-direction:column;gap:3px;text-align:left;min-width:0;overflow:hidden}
 .cal .d:hover{border-color:var(--accent)}
 .cal .d.out{opacity:.4}
 .cal .d.we{background:var(--sunk)}
@@ -247,7 +247,10 @@ dialog.big{width:min(1100px,calc(100% - 32px));padding:20px;position:fixed}
 .cv.ce{white-space:normal;line-height:1.2;overflow-wrap:anywhere;background:color-mix(in srgb,var(--ce) 16%,var(--surface));color:color-mix(in srgb,var(--ce) 80%,#000);border-left:3px solid var(--ce);border-radius:0 5px 5px 0}
 .cv.ce.prev{background:var(--surface);color:var(--muted);border-left-style:dashed;opacity:.85}
 .cvwarn{color:var(--danger);font-style:normal;font-size:.65rem;margin-left:2px}
-.cv.ce .cvn{display:inline-block;min-width:16px;font-variant-numeric:tabular-nums}
+.cv.ce{display:flex;flex-direction:column;gap:0;padding:3px 7px}
+.cv.ce .cvt{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cv.ce .cvp{font-weight:600;font-size:.68rem;opacity:.9}
+.cal .dtot{font-size:.74rem}
 .lg-cita{display:inline-block;width:18px;height:10px;border-radius:3px;background:var(--accent-soft)}
 .lg-sat{display:inline-block;width:18px;height:4px;border-radius:9px;background:linear-gradient(90deg,var(--ok),var(--warn),var(--danger))}
 .daycap{display:grid;grid-template-columns:auto 70px 70px 1fr;gap:6px 8px;align-items:center;font-size:.88rem}
@@ -1230,7 +1233,7 @@ th.mc.sub small{display:block;font-weight:400}
               <button class="btn sm" id="cal-today">Hoy</button>
               <button class="icon" id="cal-next" aria-label="Mes siguiente">›</button>
             </div>
-            <p class="cal-legend" style="display:block">Cada etiqueta: <b>personas que vienen</b> · ensayo · medida. En gris y con «~», las previstas que aún no tienen cita. <i class="cvwarn">●</i> falta gente por citar. 👥 total de personas del día.</p>
+            <p class="cal-legend" style="display:block">Cada etiqueta: arriba <b>el ensayo y la medida</b> que le toca ese día; debajo, <b>cuántas personas vienen</b>. En gris, «previstas»: aún no tienen cita. <i class="cvwarn">●</i> falta gente por citar. Arriba de cada día, el total de personas. Pulsa un día para ver su detalle debajo.</p>
             <div class="cal-ecol" id="cal-ecol"></div>
             <div class="cal" id="cal-grid"></div>
           </div>
@@ -2421,8 +2424,8 @@ function renderCal(){
     const tot = rows.reduce((s2, r) => s2 + (r.prev ? 0 : r.n), 0), totPrev = rows.reduce((s2, r) => s2 + (r.prev ? (r.plan || 0) : 0), 0);
     const cls = ["d", d.slice(0,7) !== calMonth ? "out" : "", dd.getDay() % 6 === 0 ? "we" : "", d === today ? "today" : ""].join(" ");
     h += `<button class="${cls}" data-day="${d}" aria-pressed="${d===calDay}" aria-label="${esc(longDay(d))}">
-      <span class="dtop"><span class="n">${dd.getDate()}</span>${tot || totPrev ? `<span class="dtot" title="Personas que vienen ese día${totPrev ? " (las previstas aún sin cita, aparte)" : ""}">👥 ${tot}${totPrev ? `<small> +${totPrev} prev.</small>` : ""}</span>` : ""}</span>
-      ${rows.slice(0, 6).map(x => { const c = x.extra ? {tot: 0} : calCitedState(x); return `<span class="cv ce${x.prev ? " prev" : ""}" style="--ce:${eCol[x.e.id] || "var(--muted)"}" title="${esc(x.e.codigo)} · ${esc(x.e.nombre)} · ${esc(x.t.nombre || "")}\n${x.prev ? `Previstas: ${x.plan || 0} (aún sin cita)` : `Vienen ${x.n}`}${c.tot ? ` · ${c.n} de ${c.tot} citadas en total` : ""}"><b class="cvn">${x.prev ? "~" + (x.plan || 0) : x.n}</b>${c.tot && !c.ok && !x.prev ? '<i class="cvwarn" title="Falta gente por citar">●</i>' : ""} ${esc(String(x.e.codigo).replace(/^Ensayo\s*/i, ""))} · ${esc(String(medShort(x.t) || "").replace(/\s*\(.*\)$/, ""))}</span>`; }).join("")}${rows.length > 6 ? `<span class="cvmore">+${rows.length - 6}</span>` : ""}
+      <span class="dtop"><span class="n">${dd.getDate()}</span>${tot || totPrev ? `<span class="dtot" title="Personas que vienen ese día${totPrev ? " (las previstas aún sin cita, aparte)" : ""}">${tot} ${tot === 1 ? "persona" : "personas"}${totPrev ? `<small> + ${totPrev} prev.</small>` : ""}</span>` : ""}</span>
+      ${rows.slice(0, 4).map(x => { const c = x.extra ? {tot: 0} : calCitedState(x); return `<span class="cv ce${x.prev ? " prev" : ""}" style="--ce:${eCol[x.e.id] || "var(--muted)"}" title="${esc(x.e.codigo)} · ${esc(x.e.nombre)} · ${esc(x.t.nombre || "")}\n${x.prev ? `Previstas: ${x.plan || 0} (aún sin cita)` : `Vienen ${x.n}`}${c.tot ? ` · ${c.n} de ${c.tot} citadas en total` : ""}"><span class="cvt">${esc(x.e.codigo)} · ${esc(String(medShort(x.t) || "").replace(/\s*\(.*\)$/, ""))}</span><span class="cvp">${x.prev ? `~${x.plan || 0} previstas` : `${x.n} ${x.n === 1 ? "persona" : "personas"}`}${c.tot && !c.ok && !x.prev ? ' <i class="cvwarn" title="Falta gente por citar">●</i>' : ""}</span></span>`; }).join("")}${rows.length > 4 ? `<span class="cvmore">+${rows.length - 4} más</span>` : ""}
     </button>`;
   }
   $("#cal-grid").innerHTML = h;
@@ -2471,7 +2474,7 @@ $("#cal-grid").addEventListener("click", e => {
   const b = e.target.closest("[data-day]"); if (!b) return;
   calDay = b.dataset.day; if (calDay.slice(0,7) !== calMonth) calMonth = calDay.slice(0,7);
   renderCal();
-  if (window.innerWidth < 1100) $("#cal-day").scrollIntoView({behavior:"smooth", block:"start"});
+  $("#cal-day").scrollIntoView({behavior:"smooth", block:"start"});   /* el detalle del día está debajo del calendario */
 });
 $("#cal-day").addEventListener("click", e => {
   const t = e.target.closest("button"); if (!t) return;
@@ -8846,7 +8849,7 @@ $("#login-forgot").addEventListener("click", async () => {
 });
 $("#logout").addEventListener("click", () => firebase.auth().signOut());
 /* ===== versión nueva: se mira version.txt cada 5 min; se recarga al pulsar o sola de madrugada si no hay nada a medio hacer ===== */
-const APP_VERSION = "20261123002411";
+const APP_VERSION = "20261123003032";
 let newVer = null, newVerLater = 0;
 function unsaved(){
   if (document.querySelector("dialog[open]")) return "Hay una ventana abierta: termínala o ciérrala antes de recargar.";
