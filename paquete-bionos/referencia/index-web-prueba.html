@@ -428,6 +428,10 @@ tbody tr.chk{background:color-mix(in srgb,var(--accent) 8%,var(--surface))}
 dialog{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);color:var(--fg);width:min(560px,calc(100% - 32px));padding:18px;max-height:calc(100% - 32px)}
 dialog::backdrop{background:rgb(0 0 0/.35)}
 [hidden]{display:none!important}
+.noadm-only{display:none} body.noadm .noadm-only{display:block}
+body.noadm #cz-new, body.noadm #cz-cat, body.noadm [data-cz-edit], body.noadm [data-cz-pub], body.noadm [data-cz-unpub], body.noadm [data-cz-redate],
+body.noadm #e-gocz, body.noadm #home-emp-form, body.noadm [data-empdel]{display:none!important}
+.who-am .adm{background:var(--nav-fg,#fff);color:var(--nav,#123);border-radius:6px;padding:0 5px;font-weight:700;font-size:.65rem}
 .imp-t{border-collapse:collapse;font-size:.82rem}.imp-t td,.imp-t th{padding:2px 10px 2px 0;text-align:left}.imp-t td:not(:first-child),.imp-t th:not(:first-child){text-align:right}
 .newver{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:60;display:flex;gap:12px;align-items:center;background:var(--nav);color:var(--nav-fg);border-radius:12px;padding:10px 14px;box-shadow:0 6px 24px rgb(0 0 0/.25);font-weight:600}
 .newver .link{color:var(--nav-muted)}
@@ -1282,6 +1286,7 @@ th.mc.sub small{display:block;font-weight:400}
 
       <!-- CALENDARIZACIÓN -->
       <section id="v-calendarizacion" hidden>
+        <p class="callout noadm-only" style="margin:0 0 12px">👁 <b>Solo lectura.</b> Puedes ver el calendario y la saturación de los box; para calendarizar ensayos hace falta ser administrador.</p>
         <div class="row" style="justify-content:space-between;margin-bottom:12px;gap:10px;flex-wrap:wrap">
           <p class="hint" style="margin:0;max-width:760px">Aquí se crean y se calendarizan los ensayos: visitas, circuito de box, medidas y repeticiones. Cada ensayo empieza como <b>propuesto</b> (ya se puede reclutar y ya cuenta en la saturación) y al <b>publicarlo</b> aparece en Ensayos y Paneles.</p>
           <span class="row" style="gap:8px"><button class="btn" id="cz-cat">📏 Catálogo de medidas</button><button class="btn primary" id="cz-new">+ Calendarizar ensayo nuevo</button></span>
@@ -8864,7 +8869,8 @@ function fbInit(){
   firebase.auth().onAuthStateChanged(u => {
     if (!u){ if (started){ location.reload(); return; } $("#login-ov").hidden = false; setTimeout(() => $("#login-email").focus(), 50); return; }
     $("#login-ov").hidden = true; $("#who-am").hidden = false; $("#who-email").textContent = isPuesto(u.email) ? u.email.split("@")[0] : u.email;
-    $("#logout").hidden = isPuesto(u.email);   /* los ordenadores de puesto no cierran sesión: la contraseña solo la sabe quien administra */
+    $("#logout").hidden = isPuesto(u.email);
+    watchAdmin(u);   /* los ordenadores de puesto no cierran sesión: la contraseña solo la sabe quien administra */
     if (!started){ started = true; startApp(fbAdapter(fs)); }
   });
 }
@@ -8881,6 +8887,32 @@ $("#login-forgot").addEventListener("click", async () => {
   catch { $("#login-err").textContent = "No se pudo enviar. Revisa el correo."; }
 });
 $("#logout").addEventListener("click", () => firebase.auth().signOut());
+/* ===== administradores (colección «admins» en Firestore: ID del documento = correo) ===== */
+let IS_ADMIN = false, admUnsub = null;
+const NOADM_MSG = "Solo los administradores pueden hacer esto.";
+function setAdmin(v){
+  IS_ADMIN = !!v; document.body.classList.toggle("noadm", !IS_ADMIN);
+  const w = $("#who-email"); if (w){ const b = w.querySelector(".adm"); if (IS_ADMIN && !b) w.insertAdjacentHTML("beforeend", ' <span class="adm">ADMIN</span>'); if (!IS_ADMIN && b) b.remove(); }
+  if (typeof view !== "undefined" && view === "calendarizacion" && typeof renderCalendarizacion === "function") renderCalendarizacion();
+}
+function watchAdmin(u){
+  if (admUnsub){ admUnsub(); admUnsub = null; }
+  setAdmin(false);   /* hasta saberlo, sin permisos */
+  if (!u || isPuesto(u.email)) return;   /* los puestos nunca son administradores */
+  admUnsub = firebase.firestore().collection("admins").doc(String(u.email).toLowerCase()).onSnapshot(d => setAdmin(d.exists), () => setAdmin(false));
+}
+document.body.classList.add("noadm");
+/* lo que solo pueden hacer los administradores: se bloquea aunque se llegue por otro camino */
+{ const _oef = openEnsForm; openEnsForm = function(id, mode){ if (!IS_ADMIN && (mode === "cal" || !id)){ toast(NOADM_MSG); return; } return _oef.apply(this, arguments); }; }
+{ const _ocn = openCzNew; openCzNew = function(){ if (!IS_ADMIN){ toast(NOADM_MSG); return; } return _ocn.apply(this, arguments); }; }
+{ const _oc = openCat; openCat = function(){ if (!IS_ADMIN){ toast(NOADM_MSG); return; } return _oc.apply(this, arguments); }; }
+document.addEventListener("click", ev => {
+  if (IS_ADMIN) return;
+  const t = ev.target.closest && ev.target.closest("#cz-new, #cz-cat, [data-cz-edit], [data-cz-pub], [data-cz-unpub], [data-cz-redate], #e-gocz, [data-empdel]");
+  if (t){ ev.preventDefault(); ev.stopImmediatePropagation(); toast(NOADM_MSG); }
+}, true);
+document.addEventListener("submit", ev => { if (!IS_ADMIN && ev.target.id === "home-emp-form"){ ev.preventDefault(); ev.stopImmediatePropagation(); toast(NOADM_MSG); } }, true);
+
 /* ===== pasar los datos a esta web desde una «copia completa» (Excel con la hoja «Datos completos») ===== */
 const IMP_COLS = ["vol", "ensayos", "medidas", "panel", "agenda", "visitas", "capacidad", "config"];
 const IMP_SKIP_CFG = id => /^demo/.test(id) || ["limpieza", "reset", "espacio", "importacion"].includes(id);
@@ -8963,7 +8995,7 @@ document.addEventListener("click", ev => {
 });
 
 /* ===== versión nueva: se mira version.txt cada 5 min; se recarga al pulsar o sola de madrugada si no hay nada a medio hacer ===== */
-const APP_VERSION = "20261123132723";
+const APP_VERSION = "20261123151833";
 let newVer = null, newVerLater = 0;
 function unsaved(){
   if (document.querySelector("dialog[open]")) return "Hay una ventana abierta: termínala o ciérrala antes de recargar.";

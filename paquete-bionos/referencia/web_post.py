@@ -45,6 +45,7 @@ rep('${pct === null ? `<span class="hint">Calculando…</span>` :', '${pct === n
 rep('setTimeout(() => countDb(false), 20000);','/* (en la web no se cuenta la base sola: cada recuento lee todos los documentos) */')
 rep('if (!dbUse && !dbCounting) countDb(false);','/* recuento solo con el botón */')
 exec(open('/home/claude/tools/web_import.py',encoding='utf-8').read())
+exec(open('/home/claude/tools/web_admin.py',encoding='utf-8').read())
 if not s.lstrip().lower().startswith('<!doctype'): s = '<!DOCTYPE html>\n<html lang="es">\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n' + s
 open(out,'w',encoding='utf-8').write(s)
 open('/home/claude/web/version.txt','w').write(VER+"\n")

@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function dentro() { return request.auth != null; }
+    // administrador = existe admins/{su correo}. La colección «admins» solo se cambia desde la consola de Firebase.
+    function esAdmin() {
+      return dentro() && request.auth.token.email != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.token.email.lower()));
+    }
+
+    match /admins/{correo} {
+      allow read: if dentro();
+      allow write: if false;
+    }
+
+    // Ensayos: crear y cambiar la calendarización (cal, inicio, fin) solo administradores.
+    match /ensayos/{id} {
+      allow read, delete: if dentro();
+      allow create: if esAdmin();
+      allow update: if dentro() && (
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['cal', 'inicio', 'fin'])
+        || esAdmin());
+    }
+
+    // Configuración: la lista de empleados y el catálogo de medidas solo administradores.
+    match /config/{id} {
+      allow read: if dentro();
+      allow write: if dentro() && (!(id in ['empleados', 'catalogo']) || esAdmin());
+    }
+
+    // Todo lo demás (panelistas, citas, visitas, paneles, medidas, capacidad): cualquier usuario que haya entrado.
+    match /{col}/{doc} {
+      allow read, write: if dentro() && !(col in ['admins', 'ensayos', 'config']);
+    }
+  }
+}
